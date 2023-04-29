@@ -1,0 +1,49 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "run-p lint:eslint lint:prettier lint:style",
+    "lint:eslint": "eslint --cache --fix . --quiet",
+    "lint:prettier": "prettier --write \"**/*.{js,ts,tsx,md}\" --cache",
+    "lint:style": "stylelint \"src/**/*.css\" --fix --cache"
+  },
+  "dependencies": {
+    "@vanilla-extract/css": "1.11.0",
+    "@vanilla-extract/dynamic": "2.0.3",
+    "@vanilla-extract/next-plugin": "2.1.2",
+    "@vanilla-extract/recipes": "0.4.0",
+    "clsx": "1.2.1",
+    "next": "13.3.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.16.3",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.1",
+    "@typescript-eslint/eslint-plugin": "5.59.1",
+    "@typescript-eslint/parser": "5.59.1",
+    "autoprefixer": "10.4.14",
+    "eslint": "8.39.0",
+    "eslint-config-next": "13.3.1",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "npm-run-all": "4.1.5",
+    "postcss": "8.4.23",
+    "prettier": "2.8.8",
+    "prettier-plugin-organize-imports": "3.2.2",
+    "prettier-plugin-tailwindcss": "0.2.8",
+    "simple-git-hooks": "^2.8.1",
+    "stylelint": "14.16.1",
+    "stylelint-config-prettier": "9.0.5",
+    "stylelint-config-standard": "29.0.0",
+    "tailwindcss": "3.3.2",
+    "typescript": "5.0.4"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npm run lint"
+  }
+}

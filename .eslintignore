@@ -1,0 +1,10 @@
+.cache
+package.json
+package-lock.json
+.eslintrc.js
+next.config.js
+postcss.config.js
+tailwind.config.js
+prettier.config.js
+
+*.config.js

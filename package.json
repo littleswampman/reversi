@@ -4,6 +4,8 @@
     "dev": "next dev",
     "dev:turbo": "next dev --turbo",
     "build": "next build",
+    "export": "next export",
+    "deploy": "npm run build && npm run export",
     "start": "next start",
     "lint": "run-p lint:eslint lint:prettier lint:style",
     "lint:eslint": "eslint --cache --fix . --quiet",

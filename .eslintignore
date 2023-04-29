@@ -7,4 +7,5 @@ postcss.config.js
 tailwind.config.js
 prettier.config.js
 
+out
 *.config.js

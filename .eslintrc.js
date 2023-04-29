@@ -54,5 +54,6 @@ module.exports = {
       'error',
       { allowTernary: true },
     ], // 返り値がvoidの三項演算子(judge?a:b)を許容する スタイリッシュに書けて好きなので
+    '@next/next/no-img-element': 'off',
   },
 };

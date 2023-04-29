@@ -1,6 +1,5 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 
 const Home: NextPage = () => (
   <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -75,7 +74,13 @@ const Home: NextPage = () => (
         rel="noopener noreferrer"
       >
         Powered by{' '}
-        <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+        <img
+          src="/vercel.svg"
+          alt="Vercel Logo"
+          className="h-4"
+          width={72}
+          height={16}
+        />
       </a>
     </footer>
   </div>

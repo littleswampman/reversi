@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from 'react';
 import type { boardType, cellType, playerType } from 'src/pages';
 import { boardSize } from 'src/pages';
 
@@ -27,28 +26,10 @@ export const cellContentInJapanese = (
 };
 
 /**
- * @description 指定したcellのpieceを反転させる。pieceがない場合はエラーを返す。
- */
-export const reversePiece = (
-  rowNum: number,
-  colNum: number,
-  board: boardType,
-  setBoard: Dispatch<SetStateAction<boardType>>,
-): void => {
-  if (board[rowNum][colNum] === 0) {
-    throw new TypeError('cell is empty');
-  }
-  const new_board = board.map((rowArr) => [...rowArr]) as boardType;
-  new_board[rowNum][colNum] = -board[rowNum][colNum] as cellType;
-
-  setBoard(new_board);
-};
-
-/**
- * @description 指定したcellに指定されたplayerを返す。
+ * @description 指定されたplayerが置ける場所を調べる
  * @returns [number, number]
  */
-export const checkCanPut = (
+export const checkCanPutCell = (
   board: boardType,
   player: playerType,
 ): [number, number][] => {
@@ -84,16 +65,34 @@ export const checkCanPut = (
 };
 
 /**
+ * @description 指定したcellのpieceを反転させる。pieceがない場合はエラーを返す。
+ */
+export const reversePiece = (
+  rowNum: number,
+  colNum: number,
+  board: boardType,
+  // setBoard: Dispatch<SetStateAction<boardType>>,
+): boardType => {
+  if (board[rowNum][colNum] === 0) {
+    throw new TypeError('cell is empty');
+  }
+  const new_board = board.map((rowArr) => [...rowArr]) as boardType;
+  new_board[rowNum][colNum] = -board[rowNum][colNum] as cellType;
+
+  return new_board;
+};
+
+/**
  * @description 指定したcellが指定されたに中身と合致していた場合、指定されたpieceを置く。中身が指定されていないものだった場合はエラーを返す。
  */
 export const putPiece = (
   rowNum: number,
   colNum: number,
   board: boardType,
-  setBoard: Dispatch<SetStateAction<boardType>>,
+  // setBoard: Dispatch<SetStateAction<boardType>>,
   targetCellContent: cellType,
-  playerType: playerType,
-): void => {
+  player: playerType,
+): boardType => {
   if (board[rowNum][colNum] !== targetCellContent) {
     throw new TypeError(
       `[${rowNum},${colNum}] is ${cellContentInJapanese(
@@ -104,27 +103,25 @@ export const putPiece = (
     );
   }
   const new_board = board.map((rowArr) => [...rowArr]) as boardType;
-  new_board[rowNum][colNum] = playerType;
-  setBoard(new_board);
+  new_board[rowNum][colNum] = player;
+  return new_board;
 };
 
+/**
+ * @description 指定したcellが指定されたに中身と合致していた場合、指定されたpieceを置く。中身が指定されていないものだった場合はエラーを返す。
+ */
 export const placePiece = (
   row: number,
   col: number,
   player: playerType,
   board: boardType,
-  setBoard: Dispatch<SetStateAction<boardType>>,
-): void => {
-  // 既に石が置かれている場合はエラーを投げる
-  if (board[row][col] !== 0) {
-    throw new Error('cell is not empty');
-  }
-
+  // setBoard: Dispatch<SetStateAction<boardType>>,
+): boardType => {
   // 新しい盤面を作成する
-  const newBoard = board.map((rowArr) => [...rowArr]) as boardType;
+  let newBoard = board.map((rowArr) => [...rowArr]) as boardType;
 
   // 置いた場所にプレイヤーの石を置く
-  newBoard[row][col] = player;
+  newBoard = putPiece(row, col, newBoard, 0 as cellType, player);
 
   // 8方向に対してひっくり返せるかどうかを調べ、ひっくり返す
   for (const [dr, dc] of directionList) {
@@ -133,7 +130,7 @@ export const placePiece = (
     let canFlip = false;
     const flippedPieces: [number, number][] = [];
 
-    while (r >= 0 && r < 8 && c >= 0 && c < 8) {
+    while (r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
       if (newBoard[r][c] === 0) break;
       if (newBoard[r][c] === player * -1) {
         canFlip = true;
@@ -141,7 +138,7 @@ export const placePiece = (
       } else if (newBoard[r][c] === player) {
         if (canFlip) {
           for (const [flipRow, flipCol] of flippedPieces) {
-            reversePiece(flipRow, flipCol, newBoard, setBoard);
+            newBoard = reversePiece(flipRow, flipCol, newBoard);
           }
         }
         break;
@@ -151,5 +148,18 @@ export const placePiece = (
     }
   }
 
-  setBoard(newBoard);
+  return newBoard;
+};
+
+/**
+ * @description boardにある指定されたplayerの駒の数を返す
+ */
+export const countPiece = (board: boardType, player: playerType): number => {
+  let count = 0;
+  board.forEach((row) => {
+    row.forEach((cell) => {
+      if (cell === player) count++;
+    });
+  });
+  return count;
 };

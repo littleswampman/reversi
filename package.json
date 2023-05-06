@@ -1,5 +1,6 @@
 {
   "private": true,
+  "name": "revrsi",
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbo",
@@ -50,7 +51,7 @@
     "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
-    "*.css*":[
+    "*{css,scss}":[
       "stylelint --fix --cache"
     ],
     "*.{js,ts,tsx,md}": [

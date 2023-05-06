@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { useState } from 'react';
 import { checkCanPutCell, countPiece, placePiece } from 'src/functions/reversi';
 import type { SameLength } from 'src/types/common';
-import { cellHeightList, cellWidthList, styles } from './styles.css';
+import { cellHeightList, cellWidthList, styles } from '../styles/styles.css';
 
 // SECTION 型や定数の基本設定
 export const boardSize = 6; // NOTE 2以上の偶数
@@ -44,7 +44,12 @@ const Home: NextPage = () => {
   const pass = () => {
     if (previousTurnPassed) {
       gameEnd = true;
-      alert(`ゲーム終了 ${countPiece(board, 1)}対${countPiece(board, -1)}`);
+      alert(
+        `ゲーム終了: 黒${countPiece(board, 1)}枚 対 白${countPiece(
+          board,
+          -1,
+        )}枚`,
+      );
     }
     setWhichPlayerTurn((whichPlayerTurn === 1 ? -1 : 1) as playerType);
     setCanPut(
@@ -140,7 +145,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
+      <main className="flex w-full flex-1 flex-col items-center justify-center text-center">
         {board.map((row, rowIndex) => (
           <div
             key={`${row}__${Math.floor(

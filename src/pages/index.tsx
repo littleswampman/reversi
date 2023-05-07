@@ -11,6 +11,7 @@ import { cellHeightList, cellWidthList, styles } from '../styles/styles.css';
 export const boardSize = 6; // NOTE 2以上の偶数
 export const cellSize = 6;
 export type playerType = -1 | 1; // NOTE 1:黒, -1:白
+const startPlayer: playerType = 1; // NOTE 黒(1)が先手
 export type cellType = playerType | 0; // NOTE 1:黒, -1:白, 0:何もなし
 
 export type boardType = SameLength<
@@ -30,31 +31,32 @@ initial_board[boardSize / 2][boardSize / 2] = 1;
 // SECTION ページのプログラム
 const Home: NextPage = () => {
   // SECTION 準備
-  let gameEnd = false;
+  let justifyGameEnd = false;
   const [previousTurnPassed, setPreviousTurnPassed] = useState<boolean>(false);
 
   const [board, setBoard] = useState<boardType>(initial_board);
   const [turnCount, setTurnCount] = useState<number>(0);
-  // NOTE 黒(1)が先手
-  const [whichPlayerTurn, setWhichPlayerTurn] = useState<playerType>(1);
-  const [canPut, setCanPut] = useState<[number, number][]>(
-    checkCanPutCell(board, whichPlayerTurn),
-  );
+  const [whichPlayerTurn, setWhichPlayerTurn] =
+    useState<playerType>(startPlayer);
+  const canPut = checkCanPutCell(board, whichPlayerTurn);
+
+  const gameEnd = () => {
+    justifyGameEnd = true;
+    alert(
+      `ゲーム終了: 黒${countPiece(board, 1)}枚 対 白${countPiece(board, -1)}枚`,
+    );
+
+    setBoard(initial_board);
+    setTurnCount(0);
+    setWhichPlayerTurn(startPlayer);
+  };
 
   const pass = () => {
+    // 連続でパスした場合、ゲーム終了
     if (previousTurnPassed) {
-      gameEnd = true;
-      alert(
-        `ゲーム終了: 黒${countPiece(board, 1)}枚 対 白${countPiece(
-          board,
-          -1,
-        )}枚`,
-      );
+      gameEnd();
     }
     setWhichPlayerTurn((whichPlayerTurn === 1 ? -1 : 1) as playerType);
-    setCanPut(
-      checkCanPutCell(board, (whichPlayerTurn === 1 ? -1 : 1) as playerType),
-    );
     setPreviousTurnPassed(true);
   };
 
@@ -70,28 +72,16 @@ const Home: NextPage = () => {
     setBoard(newBoard);
     setWhichPlayerTurn((whichPlayerTurn === 1 ? -1 : 1) as playerType);
 
-    if (!gameEnd) {
+    if (!justifyGameEnd) {
       if (board.every((row) => row.every((col) => col !== 0))) {
         // 盤面が埋まった場合、ゲーム終了
-        gameEnd = true;
+        justifyGameEnd = true;
       } else {
         // ターン数を更新
         setTurnCount(turnCount + 1);
 
-        // 置ける場所を確認
-        // NOTE 置ける場所のハイライトは、canPutに対応してboardの描画時に行う
-        setCanPut(
-          checkCanPutCell(
-            newBoard,
-            (whichPlayerTurn === 1 ? -1 : 1) as playerType,
-          ),
-        );
-        console.log(canPut);
-        console.log(board);
-        console.log('________________________________');
-
+        // どこにも置けない場合、パス
         if (canPut.length === 0) {
-          // どこにも置けない場合、パス
           pass();
         }
       }

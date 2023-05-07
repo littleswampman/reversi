@@ -35,7 +35,7 @@ const Home: NextPage = () => {
   const [previousTurnPassed, setPreviousTurnPassed] = useState<boolean>(false);
 
   const [board, setBoard] = useState<boardType>(initial_board);
-  const [turnCount, setTurnCount] = useState<number>(0);
+  const [turnCount, setTurnCount] = useState<number>(1);
   const [whichPlayerTurn, setWhichPlayerTurn] =
     useState<playerType>(startPlayer);
   const canPut = checkCanPutCell(board, whichPlayerTurn);
@@ -46,8 +46,9 @@ const Home: NextPage = () => {
       `ゲーム終了: 黒${countPiece(board, 1)}枚 対 白${countPiece(board, -1)}枚`,
     );
 
+    // 盤面を初期化
     setBoard(initial_board);
-    setTurnCount(0);
+    setTurnCount(1);
     setWhichPlayerTurn(startPlayer);
   };
 
@@ -55,9 +56,11 @@ const Home: NextPage = () => {
     // 連続でパスした場合、ゲーム終了
     if (previousTurnPassed) {
       gameEnd();
+    } else {
+      setTurnCount(turnCount + 1);
+      setWhichPlayerTurn((whichPlayerTurn === 1 ? -1 : 1) as playerType);
+      setPreviousTurnPassed(true);
     }
-    setWhichPlayerTurn((whichPlayerTurn === 1 ? -1 : 1) as playerType);
-    setPreviousTurnPassed(true);
   };
 
   // !SECTION 準備
@@ -149,7 +152,7 @@ const Home: NextPage = () => {
                   JSON.stringify(v) === JSON.stringify([rowIndex, colIndex]),
               ) ? (
                 // 駒が置ける場所の場合
-                // animatePingでハイライト
+                // styles.canPutでハイライト
                 // onclickで駒を置く処理
                 <div
                   key={`cell_${rowIndex}-${col}__${Math.floor(
